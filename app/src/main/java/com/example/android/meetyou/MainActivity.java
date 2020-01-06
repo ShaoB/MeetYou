@@ -1,14 +1,16 @@
 package com.example.android.meetyou;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
+import com.example.android.framework.base.BaseUIActivity;
+import com.example.android.framework.manager.MediaPlayManager;
+import com.example.android.framework.utils.LogUtils;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseUIActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
     }
 }
