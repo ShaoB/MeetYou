@@ -20,7 +20,7 @@ android {
             //自定义Gradle常量  BuildConfig类
             buildConfigField("boolean","LOG_DEBUG","true")
             buildConfigField("String","LOG_TAG","\"sb\"")
-            buildConfigField("String","SP_NAME","\"Config\"")
+            buildConfigField("String","SP_NAME","\"UserConfig\"")
         }
         release {
             minifyEnabled false
@@ -28,7 +28,7 @@ android {
 
             buildConfigField("boolean","LOG_DEBUG","false")
             buildConfigField("String","LOG_TAG","\"sb\"")
-            buildConfigField("String","SP_NAME","\"Config\"")
+            buildConfigField("String","SP_NAME","\"UserConfig\"")
         }
     }
 

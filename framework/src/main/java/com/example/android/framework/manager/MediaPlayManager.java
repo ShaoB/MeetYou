@@ -62,8 +62,10 @@ public class MediaPlayManager {
             mMediaPlayer.setDataSource(path);
             mMediaPlayer.prepare();
             mMediaPlayer.start();
+            setLooping(true);
             MEDIA_STATUS = MEDIA_STATUS_PLAY;
             mHandler.sendEmptyMessage(H_PROGRESS);
+
         } catch (IOException e) {
             LogUtils.e(e.toString());
             e.printStackTrace();
