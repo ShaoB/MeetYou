@@ -4,12 +4,13 @@ import android.os.Bundle;
 
 import com.example.android.framework.utils.SystemUI;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-public class BaseUIActivity extends AppCompatActivity{
+/**
+ * 沉浸式
+ */
+public class BaseUIActivity extends BaseActivity{
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         SystemUI.fixSystemUI(this);

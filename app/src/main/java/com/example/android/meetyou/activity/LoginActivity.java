@@ -1,16 +1,14 @@
 package com.example.android.meetyou.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 
-import com.example.android.framework.base.BaseUIActivity;
+import com.example.android.framework.base.BaseActivity;
 import com.example.android.meetyou.R;
 
-public class LoginActivity extends BaseUIActivity {
+public class LoginActivity extends BaseActivity {
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
     }

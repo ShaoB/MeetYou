@@ -1,3 +1,10 @@
 <resources>
-    <string name="app_name">MeetYou</string>
+    <string name="app_name">遇见</string>
+
+    <!-- 引导页 -->
+    <string name="text_guide_skip">跳过</string>
+    <string name="text_guide_pager_1">每个人，都是一颗孤独的星球</string>
+    <string name="text_guide_pager_2">我们在黑夜中寻找光明</string>
+    <string name="text_guide_pager_3">如果遇见，请面带微笑</string>
+
 </resources>

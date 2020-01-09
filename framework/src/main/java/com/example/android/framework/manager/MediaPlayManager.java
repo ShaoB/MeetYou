@@ -19,13 +19,13 @@ import androidx.annotation.NonNull;
 public class MediaPlayManager {
 
     //播放
-    private static final int MEDIA_STATUS_PLAY = 0;
+    public static final int MEDIA_STATUS_PLAY = 0;
     //暂停
-    private static final int MEDIA_STATUS_PAUSE = 1;
+    public static final int MEDIA_STATUS_PAUSE = 1;
     //停止
-    private static final int MEDIA_STATUS_STOP = 2;
+    public static final int MEDIA_STATUS_STOP = 2;
     //默认状态
-    private static int MEDIA_STATUS = MEDIA_STATUS_STOP;
+    public int MEDIA_STATUS = MEDIA_STATUS_STOP;
 
     //handler what
     private final int H_PROGRESS = 1000;
@@ -62,7 +62,6 @@ public class MediaPlayManager {
             mMediaPlayer.setDataSource(path);
             mMediaPlayer.prepare();
             mMediaPlayer.start();
-            setLooping(true);
             MEDIA_STATUS = MEDIA_STATUS_PLAY;
             mHandler.sendEmptyMessage(H_PROGRESS);
 
