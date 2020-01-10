@@ -48,7 +48,6 @@ public class IndexActivity extends BaseActivity implements View.OnClickListener 
      * 进入主页
      */
     private void startMain() {
-        SpUtils.getInstance().initSp(this);
         //判断APP是不是第一次启动
         boolean is_first = SpUtils.getInstance().getBoolean(Constant.SP_IS_FIRST_APP, true);
 

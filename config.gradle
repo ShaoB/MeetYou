@@ -13,4 +13,8 @@ ext{
     dependencies = [
 
     ]
+    //仓库
+    repository = [
+            "bmob" : "https://raw.github.com/bmob/bmob-android-sdk/master"
+    ]
 }
