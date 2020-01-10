@@ -8,5 +8,5 @@ import cn.bmob.v3.BmobUser;
  * Profile:
  */
 public class User extends BmobUser {
-
+    
 }

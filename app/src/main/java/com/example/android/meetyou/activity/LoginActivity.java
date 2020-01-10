@@ -16,6 +16,7 @@ import com.example.android.framework.manager.DialogManager;
 import com.example.android.framework.utils.JumpUtils;
 import com.example.android.framework.utils.ToastUtils;
 import com.example.android.framework.view.DialogView;
+import com.example.android.framework.view.LodingView;
 import com.example.android.framework.view.TouchPictureV;
 import com.example.android.meetyou.MainActivity;
 import com.example.android.meetyou.R;
@@ -24,6 +25,7 @@ import androidx.annotation.NonNull;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.LogInListener;
 import cn.bmob.v3.listener.QueryListener;
+import cn.bmob.v3.listener.SaveListener;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
 
@@ -74,6 +76,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         }
     });
     private DialogView mDialog;
+    private LodingView mLodingView;
     private TouchPictureV mtouchPic;
 
     @Override
@@ -85,6 +88,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     }
 
     private void initDialog() {
+        mLodingView = new LodingView(this);
+        mLodingView.setCancelable(false);
+
         mDialog = DialogManager.getInstance().initView(this, R.layout.dialog_login);
         mtouchPic = mDialog.findViewById(R.id.touchPic);
         mtouchPic.setViewResultListener(new TouchPictureV.OnViewResultListener() {
@@ -121,10 +127,33 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 login();
                 break;
             case R.id.tv_test_login:
+                testLogin();
                 break;
             case R.id.tv_user_agreement:
                 break;
         }
+    }
+
+    private void testLogin() {
+        mLodingView.show(getString(R.string.text_login_now_login_text));
+        final User user = new User();
+        //此处替换为你的用户名
+        user.setUsername("15201583278");
+        //此处替换为你的密码
+        user.setPassword("123456");
+        user.login(new SaveListener<User>() {
+            @Override
+            public void done(User bmobUser, BmobException e) {
+                if (e == null) {
+                    mLodingView.hide();
+                    ToastUtils.show(LoginActivity.this,R.string.toast_success);
+                    JumpUtils.goNext(LoginActivity.this, MainActivity.class,true);
+                } else {
+                    mLodingView.hide();
+                    ToastUtils.show(LoginActivity.this,R.string.toast_error);
+                }
+            }
+        });
     }
 
     /**
@@ -141,14 +170,16 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             ToastUtils.show(this, R.string.toast_login_code_null);
             return;
         }
-
+        mLodingView.show(getString(R.string.text_login_now_login_text));
         BmobManager.getInstance().signOrLoginByMobilePhone(phone, code, new LogInListener<User>() {
             @Override
             public void done(User user, BmobException e) {
                 if(e == null){
+                    mLodingView.hide();
                     ToastUtils.show(LoginActivity.this, R.string.toast_success);
                     JumpUtils.goNext(LoginActivity.this, MainActivity.class,true);
                 }else{
+                    mLodingView.hide();
                     ToastUtils.show(LoginActivity.this, R.string.toast_error);
                 }
             }
