@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.android.framework.base.BaseActivity;
+import com.example.android.framework.bmob.BmobManager;
 import com.example.android.framework.entity.Constant;
 import com.example.android.framework.utils.JumpUtils;
 import com.example.android.framework.utils.SpUtils;
@@ -59,8 +60,14 @@ public class IndexActivity extends BaseActivity implements View.OnClickListener 
             //判断是否登录过（是否记住密码）
             String sp_token = SpUtils.getInstance().getString(Constant.SP_TOKEN, "");
             if (TextUtils.isEmpty(sp_token)) {
-                //没有登陆过 跳转登录页
-                JumpUtils.goNext(this, LoginActivity.class, true);
+                //判断bmob是否登录
+                if(BmobManager.getInstance().islogin()){
+                    JumpUtils.goNext(this, MainActivity.class, true);
+                }else{
+                    //没有登陆过 跳转登录页
+                    JumpUtils.goNext(this, LoginActivity.class, true);
+                }
+
             } else {
                 //跳转主页
                 JumpUtils.goNext(this, MainActivity.class, true);
