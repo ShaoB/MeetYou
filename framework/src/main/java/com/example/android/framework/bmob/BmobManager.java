@@ -64,7 +64,15 @@ public class BmobManager {
         BmobUser.signOrLoginByMobilePhone(phone, smsCode, listener);
     }
 
+    /**
+     * 获取用户实体
+     * @return
+     */
     public User getUser(){
         return BmobUser.getCurrentUser(User.class);
+    }
+
+    public boolean islogin(){
+        return BmobUser.isLogin();
     }
 }
