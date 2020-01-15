@@ -21,7 +21,7 @@ public class BaseActivity extends AppCompatActivity {
     protected String[] mPermisssions = {
             Manifest.permission.READ_PHONE_STATE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.CALL_PHONE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.CAMERA
     };
     //没有申请的权限组
