@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.example.android.framework.base.BaseUIActivity;
+import com.example.android.framework.base.CommonAdapter;
+import com.example.android.framework.base.CommonViewHolder;
 import com.example.android.framework.bmob.BmobManager;
 import com.example.android.framework.bmob.User;
 import com.example.android.framework.utils.CommonUtils;
@@ -31,6 +33,11 @@ import cn.bmob.v3.listener.FindListener;
 
 public class AddFriendActivity extends BaseUIActivity implements View.OnClickListener {
 
+    //标题
+    public static final int TYPE_TITLE = 0;
+    //内容
+    public static final int TYPE_CONTENT = 1;
+
     private LinearLayout mLlToContact;
     /**
      * 电话号码
@@ -40,7 +47,7 @@ public class AddFriendActivity extends BaseUIActivity implements View.OnClickLis
     private RecyclerView mMSearchResultView;
     private View include_empty_view;
 
-    private AddFriendAdapter mAddFriendAdapter;
+    private CommonAdapter<AddFriendModel> mAddFriendAdapter;
     private List<AddFriendModel> mlist = new ArrayList<>();
     private String mobilePhoneNumber;
 
@@ -97,14 +104,38 @@ public class AddFriendActivity extends BaseUIActivity implements View.OnClickLis
 
         mMSearchResultView.setLayoutManager(new LinearLayoutManager(this));
         mMSearchResultView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        mAddFriendAdapter = new AddFriendAdapter(this, mlist);
-        mMSearchResultView.setAdapter(mAddFriendAdapter);
-        mAddFriendAdapter.setOnClickListener(new AddFriendAdapter.OnClickListener() {
+
+        mAddFriendAdapter = new CommonAdapter<AddFriendModel>(mlist, new CommonAdapter.OnBindMoreDataListener<AddFriendModel>() {
             @Override
-            public void setOnclickListener(int postion) {
-                ToastUtils.show(AddFriendActivity.this, postion + "");
+            public int getItemType(int position) {
+                return mlist.get(position).getType();
+            }
+
+            @Override
+            public void onBindViewHolder(AddFriendModel model, CommonViewHolder viewHolder, int type, int position) {
+                if(type == TYPE_TITLE){
+                    viewHolder.setText(R.id.tv_title,model.getTitle());
+                }else if(type == TYPE_CONTENT){
+                    viewHolder.setImageUrl(AddFriendActivity.this,R.id.iv_photo,model.getPhoto());
+                    viewHolder.setImageResource(R.id.iv_sex,model.isSex() ? R.mipmap.img_boy_icon : R.mipmap.img_girl_icon);
+                    viewHolder.setText(R.id.tv_nickname,model.getNickName());
+                    viewHolder.setText(R.id.tv_age,model.getAge()+"岁");
+                    viewHolder.setText(R.id.tv_desc,model.getDesc());
+                }
+            }
+
+            @Override
+            public int getLayoutId(int type) {
+                if(type == TYPE_TITLE){
+                    return R.layout.layout_search_title_item;
+                }else if(type == TYPE_CONTENT){
+                    return R.layout.layout_search_user_item;
+                }
+                return 0;
             }
         });
+
+        mMSearchResultView.setAdapter(mAddFriendAdapter);
     }
 
     /**
@@ -147,6 +178,8 @@ public class AddFriendActivity extends BaseUIActivity implements View.OnClickLis
                         include_empty_view.setVisibility(View.VISIBLE);
                         mMSearchResultView.setVisibility(View.GONE);
                     }
+                }else{
+                    ToastUtils.show(AddFriendActivity.this,"bmob报错：" + e.toString());
                 }
             }
         });

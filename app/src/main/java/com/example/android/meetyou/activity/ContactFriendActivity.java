@@ -3,15 +3,16 @@ package com.example.android.meetyou.activity;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.view.View;
 
+import com.example.android.framework.base.CommonAdapter;
+import com.example.android.framework.base.CommonViewHolder;
 import com.example.android.framework.bmob.BmobManager;
 import com.example.android.framework.bmob.User;
 import com.example.android.framework.utils.CommonUtils;
 import com.example.android.framework.utils.LogUtils;
-import com.example.android.framework.utils.ToastUtils;
 import com.example.android.meetyou.Bean.AddFriendModel;
 import com.example.android.meetyou.R;
-import com.example.android.meetyou.adapter.AddFriendAdapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,7 +34,7 @@ public class ContactFriendActivity extends AppCompatActivity {
     private RecyclerView mRvContact;
     private Map<String, String> mContactMap = new HashMap<>();
 
-    private AddFriendAdapter mAddFriendAdapter;
+    private CommonAdapter<AddFriendModel> mAddFriendAdapter;
     private List<AddFriendModel> mList = new ArrayList<>();
 
     @Override
@@ -47,14 +48,27 @@ public class ContactFriendActivity extends AppCompatActivity {
         mRvContact = (RecyclerView) findViewById(R.id.rv_contact);
         mRvContact.setLayoutManager(new LinearLayoutManager(this));
         mRvContact.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        mAddFriendAdapter = new AddFriendAdapter(this,mList);
-        mRvContact.setAdapter(mAddFriendAdapter);
-        mAddFriendAdapter.setOnClickListener(new AddFriendAdapter.OnClickListener() {
+
+        mAddFriendAdapter = new CommonAdapter<AddFriendModel>(mList, new CommonAdapter.OnBindDataListener<AddFriendModel>() {
             @Override
-            public void setOnclickListener(int postion) {
-                ToastUtils.show(ContactFriendActivity.this, "" + postion);
+            public void onBindViewHolder(AddFriendModel model, CommonViewHolder viewHolder, int type, int position) {
+                viewHolder.setImageUrl(ContactFriendActivity.this,R.id.iv_photo,model.getPhoto());
+                viewHolder.setImageResource(R.id.iv_sex,model.isSex() ? R.mipmap.img_boy_icon : R.mipmap.img_girl_icon);
+                viewHolder.setText(R.id.tv_nickname,model.getNickName());
+                viewHolder.setText(R.id.tv_age,model.getAge()+"岁");
+                viewHolder.setText(R.id.tv_desc,model.getDesc());
+                viewHolder.setVisibility(R.id.ll_contact_info,View.VISIBLE);
+                viewHolder.setText(R.id.tv_contact_name,model.getContactName());
+                viewHolder.setText(R.id.tv_contact_phone,model.getContactPhone());
+            }
+
+            @Override
+            public int getLayoutId(int type) {
+                return R.layout.layout_search_user_item;
             }
         });
+
+        mRvContact.setAdapter(mAddFriendAdapter);
 
         loadContact();
         loadUser();
@@ -110,7 +124,7 @@ public class ContactFriendActivity extends AppCompatActivity {
      */
     private void addContent(User user, String name, String phone) {
         AddFriendModel addFriendModel = new AddFriendModel();
-        addFriendModel.setType(AddFriendAdapter.TYPE_CONTENT);
+        addFriendModel.setType(AddFriendActivity.TYPE_CONTENT);
         addFriendModel.setUserId(user.getObjectId());
         addFriendModel.setPhoto(user.getPhoto());
         addFriendModel.setSex(user.isSex());
