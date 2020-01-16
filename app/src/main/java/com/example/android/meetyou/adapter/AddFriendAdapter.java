@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.android.framework.helper.GlideHelper;
@@ -68,15 +69,22 @@ public class AddFriendAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             ((ContentViewHolder) holder).tv_nickname.setText(friendModel.getNickName());
             ((ContentViewHolder) holder).tv_age.setText(friendModel.getAge()+"岁");
             ((ContentViewHolder) holder).tv_desc.setText(friendModel.getDesc());
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(onClickListener != null){
-                        onClickListener.setOnclickListener(position);
-                    }
-                }
-            });
+
+            //通讯录 是否显示姓名和电话号码
+            if(friendModel.isContact()){
+                ((ContentViewHolder) holder).ll_contact_info.setVisibility(View.VISIBLE);
+                ((ContentViewHolder) holder).tv_contact_name.setText(friendModel.getContactName());
+                ((ContentViewHolder) holder).tv_contact_phone.setText(friendModel.getContactPhone());
+            }
         }
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(onClickListener != null){
+                    onClickListener.setOnclickListener(position);
+                }
+            }
+        });
     }
 
     @Override
@@ -105,6 +113,9 @@ public class AddFriendAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         private TextView tv_nickname;
         private TextView tv_age;
         private TextView tv_desc;
+        private LinearLayout ll_contact_info;
+        private TextView tv_contact_name;
+        private TextView tv_contact_phone;
 
         public ContentViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -114,6 +125,9 @@ public class AddFriendAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             tv_nickname = itemView.findViewById(R.id.tv_nickname);
             tv_age = itemView.findViewById(R.id.tv_age);
             tv_desc = itemView.findViewById(R.id.tv_desc);
+            ll_contact_info = itemView.findViewById(R.id.ll_contact_info);
+            tv_contact_name = itemView.findViewById(R.id.tv_contact_name);
+            tv_contact_phone = itemView.findViewById(R.id.tv_contact_phone);
         }
     }
 

@@ -1,5 +1,7 @@
 package com.example.android.meetyou.activity;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -11,6 +13,7 @@ import com.example.android.framework.base.BaseUIActivity;
 import com.example.android.framework.bmob.BmobManager;
 import com.example.android.framework.bmob.User;
 import com.example.android.framework.utils.CommonUtils;
+import com.example.android.framework.utils.JumpUtils;
 import com.example.android.framework.utils.ToastUtils;
 import com.example.android.meetyou.Bean.AddFriendModel;
 import com.example.android.meetyou.R;
@@ -19,6 +22,7 @@ import com.example.android.meetyou.adapter.AddFriendAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -40,11 +44,46 @@ public class AddFriendActivity extends BaseUIActivity implements View.OnClickLis
     private List<AddFriendModel> mlist = new ArrayList<>();
     private String mobilePhoneNumber;
 
+    private final int ADD_BOOK_REQUEST_CODE = 1009;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_friend);
         initView();
+    }
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            default:
+                break;
+            case R.id.ll_to_contact:
+                //处理权限
+                if(checkPermissions(Manifest.permission.READ_CONTACTS)){
+                    JumpUtils.goNext(this,ContactFriendActivity.class);
+                }else{
+                    requestPermission(new String[]{Manifest.permission.READ_CONTACTS},ADD_BOOK_REQUEST_CODE);
+                }
+                break;
+            case R.id.iv_search:
+                queryPhoneUser();
+                break;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if(requestCode == ADD_BOOK_REQUEST_CODE){
+                //拒绝
+                if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                    ToastUtils.show(AddFriendActivity.this,"用户拒绝");
+                }else{
+                    JumpUtils.goNext(this,ContactFriendActivity.class);
+                }
+
+
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     private void initView() {
@@ -66,19 +105,6 @@ public class AddFriendActivity extends BaseUIActivity implements View.OnClickLis
                 ToastUtils.show(AddFriendActivity.this, postion + "");
             }
         });
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            default:
-                break;
-            case R.id.ll_to_contact:
-                break;
-            case R.id.iv_search:
-                queryPhoneUser();
-                break;
-        }
     }
 
     /**

@@ -22,7 +22,8 @@ public class BaseActivity extends AppCompatActivity {
             Manifest.permission.READ_PHONE_STATE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.CAMERA
+            Manifest.permission.CAMERA,
+            Manifest.permission.READ_CONTACTS
     };
     //没有申请的权限组
     private List<String> mPerList = new ArrayList<>();

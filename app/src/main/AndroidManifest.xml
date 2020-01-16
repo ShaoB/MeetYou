@@ -14,12 +14,11 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:allowBackup">
+        <activity android:name=".activity.ContactFriendActivity"></activity>
 
         <provider
             android:name="cn.bmob.v3.util.BmobContentProvider"
-            android:authorities="com.example.android.meetyou.BmobContentProvider" />
-
-        <!-- OPPO适配 -->
+            android:authorities="com.example.android.meetyou.BmobContentProvider" /> <!-- OPPO适配 -->
         <meta-data
             android:name="android.max_aspect"
             android:value="2.2" />
@@ -40,9 +39,7 @@
             android:name=".activity.FirstUploadActivity"
             android:label="@string/text_upload_title"
             android:theme="@style/Theme.AppCompat.Light" />
-        <activity android:name=".activity.AddFriendActivity"></activity>
-
-        <!-- fileprovider -->
+        <activity android:name=".activity.AddFriendActivity" /> <!-- fileprovider -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.android.meetyou.fileprovider"
