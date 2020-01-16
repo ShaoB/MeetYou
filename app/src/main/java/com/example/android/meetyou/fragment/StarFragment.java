@@ -9,8 +9,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.android.framework.base.BaseFragment;
+import com.example.android.framework.utils.JumpUtils;
 import com.example.android.framework.utils.ToastUtils;
 import com.example.android.meetyou.R;
+import com.example.android.meetyou.activity.AddFriendActivity;
 import com.example.android.meetyou.adapter.CloudTagAdapter;
 import com.moxun.tagcloudlib.view.TagCloudView;
 
@@ -89,7 +91,7 @@ public class StarFragment extends BaseFragment implements View.OnClickListener{
 
                 break;
             case R.id.iv_add://添加好友
-
+                JumpUtils.goNext(getActivity(), AddFriendActivity.class);
                 break;
             case R.id.ll_random://随机
 

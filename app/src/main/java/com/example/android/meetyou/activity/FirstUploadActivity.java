@@ -20,6 +20,7 @@ import com.example.android.framework.bmob.BmobManager;
 import com.example.android.framework.helper.FileHelper;
 import com.example.android.framework.manager.DialogManager;
 import com.example.android.framework.utils.LogUtils;
+import com.example.android.framework.utils.ToastUtils;
 import com.example.android.framework.view.DialogView;
 import com.example.android.framework.view.LodingView;
 import com.example.android.meetyou.R;
@@ -156,6 +157,7 @@ public class FirstUploadActivity extends BaseBackActivity implements View.OnClic
         BmobManager.getInstance().uploadFirstPhoto(nickName, uploadFile, new BmobManager.OnUploadPhotoListener() {
             @Override
             public void OnUploadDone() {
+                ToastUtils.show(FirstUploadActivity.this,"上传成功");
                 mlodingView.hide();
                 setResult(RESULT_OK);
                 finish();

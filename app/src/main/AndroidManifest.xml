@@ -40,7 +40,7 @@
             android:name=".activity.FirstUploadActivity"
             android:label="@string/text_upload_title"
             android:theme="@style/Theme.AppCompat.Light" />
-
+        <activity android:name=".activity.AddFriendActivity"></activity>
 
         <!-- fileprovider -->
         <provider

@@ -126,4 +126,21 @@ public class User extends BmobUser {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "tokenPhoto='" + tokenPhoto + '\'' +
+                ", tokenNickName='" + tokenNickName + '\'' +
+                ", nickName='" + nickName + '\'' +
+                ", photo='" + photo + '\'' +
+                ", sex=" + sex +
+                ", desc='" + desc + '\'' +
+                ", age=" + age +
+                ", birthday='" + birthday + '\'' +
+                ", constellation='" + constellation + '\'' +
+                ", hobby='" + hobby + '\'' +
+                ", status='" + status + '\'' +
+                '}';
+    }
 }
