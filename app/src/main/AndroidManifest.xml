@@ -50,6 +50,23 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths" />
         </provider>
+
+        <!--android:process=":ipc"-->
+        <!--云服务-->
+        <service
+            android:name=".cloud.CloudService"
+            android:exported="true" />
+
+        <!-- 融云离线消息 -->
+        <receiver
+            android:name=".cloud.SealNotificationReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="io.rong.push.intent.MESSAGE_ARRIVED" />
+                <action android:name="io.rong.push.intent.MESSAGE_CLICKED" />
+                <action android:name="io.rong.push.intent.THIRD_PARTY_PUSH_STATE" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

@@ -10,11 +10,14 @@ import android.widget.TextView;
 import com.example.android.framework.base.BaseFragment;
 import com.example.android.framework.bmob.BmobManager;
 import com.example.android.framework.bmob.User;
+import com.example.android.framework.entity.Constant;
 import com.example.android.framework.helper.GlideHelper;
+import com.example.android.framework.utils.SpUtils;
 import com.example.android.meetyou.R;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import cn.bmob.v3.BmobUser;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -69,7 +72,9 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
 
                 break;
             case R.id.ll_setting:
-
+                BmobUser.logOut();
+                SpUtils.getInstance().deleteKey(Constant.SP_IS_FIRST_APP);
+                SpUtils.getInstance().deleteKey(Constant.SP_TOKEN);
                 break;
         }
     }

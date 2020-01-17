@@ -21,6 +21,7 @@ import com.example.android.framework.utils.ToastUtils;
 import com.example.android.framework.view.DialogView;
 import com.example.android.meetyou.Bean.TokenModel;
 import com.example.android.meetyou.activity.FirstUploadActivity;
+import com.example.android.meetyou.cloud.CloudService;
 import com.example.android.meetyou.fragment.ChatFragment;
 import com.example.android.meetyou.fragment.MeFragment;
 import com.example.android.meetyou.fragment.SquareFragment;
@@ -28,7 +29,6 @@ import com.example.android.meetyou.fragment.StarFragment;
 import com.example.android.meetyou.networkUtils.ApiService;
 import com.example.android.meetyou.networkUtils.RetrofitUtil;
 import com.example.android.meetyou.networkUtils.RetryFunction;
-import com.example.android.meetyou.cloud.CloudService;
 
 import java.util.HashMap;
 import java.util.List;
@@ -218,8 +218,7 @@ public class MainActivity extends BaseUIActivity implements View.OnClickListener
         map.put("name", BmobManager.getInstance().getUser().getTokenNickName());
         map.put("portraitUri", BmobManager.getInstance().getUser().getTokenPhoto());
 
-        ApiService apiService = RetrofitUtil.getInstance().create(ApiService.class);
-        Observable<TokenModel> observable = apiService.getCloudToken(map);
+        Observable<TokenModel> observable = RetrofitUtil.getInstance().create(ApiService.class).getCloudToken(map);
 
         observable.retryWhen(new RetryFunction(3,3))
                 .subscribeOn(Schedulers.io())

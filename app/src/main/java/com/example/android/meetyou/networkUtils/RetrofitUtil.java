@@ -3,7 +3,7 @@ package com.example.android.meetyou.networkUtils;
 import com.example.android.framework.utils.LogUtils;
 import com.example.android.framework.utils.SHA1;
 import com.example.android.meetyou.base.MyApp;
-import com.example.android.meetyou.cloud.CloudManager;
+import com.example.android.framework.cloud.CloudManager;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -40,6 +40,7 @@ public class RetrofitUtil {
         final String Nonce = String.valueOf(Math.floor(Math.random() * 100000));
         final String Signature = SHA1.sha1(CloudManager.CLOUD_SECRET + Nonce + Timestamp);
 
+        //开启Log日志
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
             @Override
             public void log(String message) {
@@ -49,6 +50,22 @@ public class RetrofitUtil {
 
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
+        //请求头 拦截器  融云需要
+        Interceptor headIntercptre = new Interceptor() {
+            @Override
+            public Response intercept(Chain chain) throws IOException {
+                Request original = chain.request();
+                // Request customization: add request headers
+                Request.Builder requestBuilder = original.newBuilder()
+                        .addHeader("Timestamp", Timestamp)
+                        .addHeader("App-Key", CloudManager.CLOUD_KEY)
+                        .addHeader("Nonce", Nonce)
+                        .addHeader("Signature", Signature)
+                        .addHeader("Content-Type", "application/x-www-form-urlencoded");
+                Request request = requestBuilder.build();
+                return chain.proceed(request);
+            }
+        };
         if (okHttpClient==null){
             synchronized (RetrofitUtil.class){
                 if (okHttpClient==null){
@@ -59,21 +76,7 @@ public class RetrofitUtil {
                             .writeTimeout(DEFAULT_READ_TIME_OUT,TimeUnit.SECONDS)//写入超时时间
                             .retryOnConnectionFailure(true)//错误重连
                             .addInterceptor(loggingInterceptor)//设置log模式
-                            .addInterceptor(new Interceptor() {
-                                @Override
-                                public Response intercept(Chain chain) throws IOException {
-                                    Request original = chain.request();
-                                    // Request customization: add request headers
-                                    Request.Builder requestBuilder = original.newBuilder()
-                                            .addHeader("Timestamp", Timestamp)
-                                            .addHeader("App-Key", CloudManager.CLOUD_KEY)
-                                            .addHeader("Nonce", Nonce)
-                                            .addHeader("Signature", Signature)
-                                            .addHeader("Content-Type", "application/x-www-form-urlencoded");
-                                    Request request = requestBuilder.build();
-                                    return chain.proceed(request);
-                                }
-                            })
+                            .addInterceptor(headIntercptre)
                             .cache(cache)
                             .build();
                 }

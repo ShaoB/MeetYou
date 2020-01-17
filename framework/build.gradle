@@ -62,6 +62,7 @@ dependencies {
     api rootProject.ext.dependencies["tagcloud"]
     //圆形头像
     api rootProject.ext.dependencies["circleimageview"]
+    api project(path: ':IMLib')
 
 
 }

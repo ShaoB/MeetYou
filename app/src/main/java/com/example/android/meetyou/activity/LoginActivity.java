@@ -54,7 +54,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
      */
     private TextView mTvUserAgreement;
     private final int SEND_LOGIN_MESSAGE = 1001;
-    private int code = 10;
+    private int code = 60;
 
     private Handler myhandler = new Handler(new Handler.Callback() {
         @Override
@@ -92,6 +92,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         mLodingView.setCancelable(false);
 
         mDialog = DialogManager.getInstance().initView(this, R.layout.dialog_login);
+        mDialog.setCancelable(false);
         mtouchPic = mDialog.findViewById(R.id.touchPic);
         mtouchPic.setViewResultListener(new TouchPictureV.OnViewResultListener() {
             @Override
@@ -138,7 +139,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         mLodingView.show(getString(R.string.text_login_now_login_text));
         final User user = new User();
         //此处替换为你的用户名
-        user.setUsername("15201583278");
+        user.setUsername("11510603000");
         //此处替换为你的密码
         user.setPassword("123456");
         user.login(new SaveListener<User>() {
