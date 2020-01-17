@@ -1,4 +1,4 @@
-package com.example.android.meetyou.service;
+package com.example.android.meetyou.cloud;
 
 import android.app.Service;
 import android.content.Intent;

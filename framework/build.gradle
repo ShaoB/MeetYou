@@ -50,12 +50,18 @@ dependencies {
     api rootProject.ext.dependencies["okio"]
     api rootProject.ext.dependencies["gson"]
     api rootProject.ext.dependencies["okhttp3"]
+    api rootProject.ext.dependencies["glide"]
+    api rootProject.ext.dependencies["recyclerview"]
+    api rootProject.ext.dependencies["retrofit"]
+    api rootProject.ext.dependencies["converter-gson"]
+    api rootProject.ext.dependencies["converter-adapter-rxjava2"]
+    api rootProject.ext.dependencies["logging-interceptor"]
+    api rootProject.ext.dependencies["eventbus"]
 
     //3d星球
     api rootProject.ext.dependencies["tagcloud"]
     //圆形头像
     api rootProject.ext.dependencies["circleimageview"]
 
-    api rootProject.ext.dependencies["glide"]
-    api rootProject.ext.dependencies["recyclerview"]
+
 }

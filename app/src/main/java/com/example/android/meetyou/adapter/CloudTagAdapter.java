@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.android.meetyou.Bean.AddFriendModel;
 import com.example.android.meetyou.R;
 import com.moxun.tagcloudlib.view.TagsAdapter;
 
@@ -20,10 +21,10 @@ import java.util.List;
 public class CloudTagAdapter extends TagsAdapter {
 
     private Context mContext;
-    private List<String> mList;
+    private List<AddFriendModel> mList;
     private LayoutInflater inflater;
 
-    public CloudTagAdapter(Context mContext, List<String> mList) {
+    public CloudTagAdapter(Context mContext, List<AddFriendModel> mList) {
         this.mContext = mContext;
         this.mList = mList;
         inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -39,7 +40,7 @@ public class CloudTagAdapter extends TagsAdapter {
         View view = inflater.inflate(R.layout.layout_star_view_item, null);
         TextView tv_name = view.findViewById(R.id.tv_star_name);
         ImageView iv_star = view.findViewById(R.id.iv_star_icon);
-        tv_name.setText(mList.get(position));
+        tv_name.setText(mList.get(position).getNickName());
         iv_star.setImageResource(R.mipmap.img_star_card_1);
         return view;
     }

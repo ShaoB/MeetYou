@@ -14,7 +14,8 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:allowBackup">
-        <activity android:name=".activity.ContactFriendActivity"></activity>
+        <activity android:name=".activity.UserInfoActivity"></activity>
+        <activity android:name=".activity.ContactFriendActivity" />
 
         <provider
             android:name="cn.bmob.v3.util.BmobContentProvider"

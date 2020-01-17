@@ -9,10 +9,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.android.framework.base.BaseFragment;
+import com.example.android.framework.bmob.BmobManager;
+import com.example.android.framework.bmob.User;
+import com.example.android.framework.utils.CommonUtils;
 import com.example.android.framework.utils.JumpUtils;
 import com.example.android.framework.utils.ToastUtils;
+import com.example.android.meetyou.Bean.AddFriendModel;
 import com.example.android.meetyou.R;
 import com.example.android.meetyou.activity.AddFriendActivity;
+import com.example.android.meetyou.activity.UserInfoActivity;
+import com.example.android.meetyou.adapter.AddFriendAdapter;
 import com.example.android.meetyou.adapter.CloudTagAdapter;
 import com.moxun.tagcloudlib.view.TagCloudView;
 
@@ -21,6 +27,8 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.FindListener;
 
 /**
  * Founder: shaobin
@@ -41,7 +49,7 @@ public class StarFragment extends BaseFragment implements View.OnClickListener{
     private LinearLayout mllLove;
 
     private CloudTagAdapter mCloudTagAdapter;
-    private List<String> mList = new ArrayList<>();
+    private List<AddFriendModel> mList = new ArrayList<>();
 
     @Nullable
     @Override
@@ -70,15 +78,31 @@ public class StarFragment extends BaseFragment implements View.OnClickListener{
         mllFate.setOnClickListener(this);
         mllLove.setOnClickListener(this);
 
-        for (int i = 0; i < 100; i++) {
-            mList.add("name"+i);
-        }
+       //添加数据
+        BmobManager.getInstance().queryAllUser(new FindListener<User>() {
+            @Override
+            public void done(List<User> list, BmobException e) {
+                if(e == null){
+                    if(CommonUtils.isEmpty(list)){
+                        mList.clear();
+                        int num = (list.size() <= 100) ? list.size() : 100;
+                        for (int i = 0; i < num; i++) {
+                            addContent(list.get(i));
+                        }
+                        mCloudTagAdapter.notifyDataSetChanged();
+                    }
+                }else{
+                    ToastUtils.show(getActivity(),"e:"+e);
+                }
+            }
+        });
         mCloudTagAdapter = new CloudTagAdapter(getActivity(),mList);
         mCloudView.setAdapter(mCloudTagAdapter);
         mCloudView.setOnTagClickListener(new TagCloudView.OnTagClickListener() {
             @Override
             public void onItemClick(ViewGroup parent, View view, int position) {
-                ToastUtils.show(getActivity(),"position:"+position);
+                String contactPhone = mList.get(position).getContactPhone();
+                JumpUtils.goNext(getActivity(), UserInfoActivity.class,contactPhone,false);
             }
         });
     }
@@ -106,5 +130,25 @@ public class StarFragment extends BaseFragment implements View.OnClickListener{
 
                 break;
         }
+    }
+
+    /**
+     * 添加内容
+     *
+     * @param user
+     */
+    private void addContent(User user) {
+        AddFriendModel addFriendModel = new AddFriendModel();
+        addFriendModel.setType(AddFriendAdapter.TYPE_CONTENT);
+        addFriendModel.setUserId(user.getObjectId());
+        addFriendModel.setPhoto(user.getPhoto());
+        addFriendModel.setSex(user.isSex());
+        addFriendModel.setAge(user.getAge());
+        addFriendModel.setNickName(user.getNickName());
+        addFriendModel.setDesc(user.getDesc());
+        addFriendModel.setContact(true);
+        addFriendModel.setContactName(user.getNickName());
+        addFriendModel.setContactPhone(user.getMobilePhoneNumber());
+        mList.add(addFriendModel);
     }
 }

@@ -10,11 +10,16 @@ import com.example.android.framework.Framework;
  * Profile:
  */
 public class MyApp extends Application {
+    public static MyApp mInstance;
 
     @Override
     public void onCreate() {
         super.onCreate();
-
+        mInstance = this;
         Framework.getFramework().initFramework(this);
+    }
+
+    public static MyApp getInstance() {
+        return mInstance;
     }
 }

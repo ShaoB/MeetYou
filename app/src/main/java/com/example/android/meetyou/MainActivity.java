@@ -19,19 +19,29 @@ import com.example.android.framework.utils.LogUtils;
 import com.example.android.framework.utils.SpUtils;
 import com.example.android.framework.utils.ToastUtils;
 import com.example.android.framework.view.DialogView;
+import com.example.android.meetyou.Bean.TokenModel;
 import com.example.android.meetyou.activity.FirstUploadActivity;
 import com.example.android.meetyou.fragment.ChatFragment;
 import com.example.android.meetyou.fragment.MeFragment;
 import com.example.android.meetyou.fragment.SquareFragment;
 import com.example.android.meetyou.fragment.StarFragment;
-import com.example.android.meetyou.service.CloudService;
+import com.example.android.meetyou.networkUtils.ApiService;
+import com.example.android.meetyou.networkUtils.RetrofitUtil;
+import com.example.android.meetyou.networkUtils.RetryFunction;
+import com.example.android.meetyou.cloud.CloudService;
 
+import java.util.HashMap;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends BaseUIActivity implements View.OnClickListener {
 
@@ -70,7 +80,6 @@ public class MainActivity extends BaseUIActivity implements View.OnClickListener
     private LinearLayout mLlMe;
     private MeFragment mMeFragment = null;
     private FragmentTransaction mMeTransaction = null;
-
 
     private static final int PERMISSION_CODE = 1000;
 
@@ -196,6 +205,49 @@ public class MainActivity extends BaseUIActivity implements View.OnClickListener
      */
     private void createToken() {
         LogUtils.e("createToken");
+        if( BmobManager.getInstance().getUser() == null){
+            ToastUtils.show(this, "登录异常");
+            return;
+        }
+        /**
+         * 1.去融云后台获取Token
+         * 2.连接融云
+         */
+        final HashMap<String, String> map = new HashMap<>();
+        map.put("userId", BmobManager.getInstance().getUser().getObjectId());
+        map.put("name", BmobManager.getInstance().getUser().getTokenNickName());
+        map.put("portraitUri", BmobManager.getInstance().getUser().getTokenPhoto());
+
+        ApiService apiService = RetrofitUtil.getInstance().create(ApiService.class);
+        Observable<TokenModel> observable = apiService.getCloudToken(map);
+
+        observable.retryWhen(new RetryFunction(3,3))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<TokenModel>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(TokenModel tokenModel) {
+                        if(tokenModel.getCode() == 200){
+                            //存入 sp
+                            SpUtils.getInstance().putString(Constant.SP_TOKEN,tokenModel.getToken());
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 
     /**

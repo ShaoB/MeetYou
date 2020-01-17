@@ -11,9 +11,12 @@ import com.example.android.framework.base.BaseActivity;
 import com.example.android.framework.bmob.BmobManager;
 import com.example.android.framework.entity.Constant;
 import com.example.android.framework.utils.JumpUtils;
+import com.example.android.framework.utils.LogUtils;
 import com.example.android.framework.utils.SpUtils;
+import com.example.android.framework.utils.ToastUtils;
 import com.example.android.meetyou.MainActivity;
 import com.example.android.meetyou.R;
+import com.example.android.meetyou.networkUtils.NetWorkUtils;
 
 import androidx.annotation.NonNull;
 
@@ -43,6 +46,11 @@ public class IndexActivity extends BaseActivity implements View.OnClickListener 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_index);
         initView();
+
+        //判断网络是否可用
+        if(!NetWorkUtils.isNetworkConnected(this)){
+            ToastUtils.show(this,"网络不可用");
+        }
     }
 
     /**
@@ -59,6 +67,7 @@ public class IndexActivity extends BaseActivity implements View.OnClickListener 
         } else {
             //判断是否登录过（是否记住密码）
             String sp_token = SpUtils.getInstance().getString(Constant.SP_TOKEN, "");
+            LogUtils.e("token:"+sp_token);
             if (TextUtils.isEmpty(sp_token)) {
                 //判断bmob是否登录
                 if(BmobManager.getInstance().islogin()){
