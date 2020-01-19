@@ -26,8 +26,7 @@ import com.example.android.meetyou.fragment.ChatFragment;
 import com.example.android.meetyou.fragment.MeFragment;
 import com.example.android.meetyou.fragment.SquareFragment;
 import com.example.android.meetyou.fragment.StarFragment;
-import com.example.android.meetyou.networkUtils.ApiService;
-import com.example.android.meetyou.networkUtils.RetrofitUtil;
+import com.example.android.meetyou.networkUtils.ApiLoader;
 import com.example.android.meetyou.networkUtils.RetryFunction;
 
 import java.util.HashMap;
@@ -39,9 +38,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends BaseUIActivity implements View.OnClickListener {
 
@@ -218,11 +215,9 @@ public class MainActivity extends BaseUIActivity implements View.OnClickListener
         map.put("name", BmobManager.getInstance().getUser().getTokenNickName());
         map.put("portraitUri", BmobManager.getInstance().getUser().getTokenPhoto());
 
-        Observable<TokenModel> observable = RetrofitUtil.getInstance().create(ApiService.class).getCloudToken(map);
 
+        Observable<TokenModel> observable = new ApiLoader().getCloudToken(map);
         observable.retryWhen(new RetryFunction(3,3))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<TokenModel>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -232,7 +227,7 @@ public class MainActivity extends BaseUIActivity implements View.OnClickListener
                     @Override
                     public void onNext(TokenModel tokenModel) {
                         if(tokenModel.getCode() == 200){
-                            //存入 sp
+                            //存入sp
                             SpUtils.getInstance().putString(Constant.SP_TOKEN,tokenModel.getToken());
                         }
                     }

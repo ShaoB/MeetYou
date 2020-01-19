@@ -1,5 +1,9 @@
 package com.example.android.meetyou.networkUtils;
 
+import com.example.android.meetyou.Bean.TokenModel;
+
+import java.util.Map;
+
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -13,8 +17,9 @@ public class ApiLoader extends ObjectLoader{
         mApiService = RetrofitUtil.getInstance().create(ApiService.class);
     }
 
-    public static ApiService getApiService(){
-        return  mApiService;
+    //获取融云Token
+    public Observable<TokenModel> getCloudToken(Map<String,String> map){
+        return observe(mApiService.getCloudToken(map));
     }
 }
 
