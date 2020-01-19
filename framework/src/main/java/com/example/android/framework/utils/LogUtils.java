@@ -1,9 +1,12 @@
 package com.example.android.framework.utils;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.example.android.framework.BuildConfig;
+import com.example.android.framework.log.MrBaseLog;
+import com.example.android.framework.log.MrFileLog;
+import com.example.android.framework.log.MrJsonLog;
+import com.example.android.framework.log.MrXmlLog;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -19,22 +22,171 @@ public class LogUtils {
 
     private static SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
 
+    public static final String LINE_SEPARATOR = System.getProperty("line.separator");
+    public static final String NULL_TIPS = "Log with null object";
+    public static final String PARAM = "Param";
+    public static final String NULL = "null";
+    public static final String TAG_DEFAULT = "sb";
+    public static final String SUFFIX = ".java";
+    public static final String PREFIX = "[sb] >>>";
 
-    public static void i(String tex){
-        if(BuildConfig.LOG_DEBUG){
-            if(!TextUtils.isEmpty(tex)){
-                Log.i(BuildConfig.LOG_TAG,tex);
-                writeToFile(tex);
-            }
-        }
+    public static final int JSON_INDENT = 4;
+
+    public static final int V = 0x1;
+    public static final int D = 0x2;
+    public static final int I = 0x3;
+    public static final int W = 0x4;
+    public static final int E = 0x5;
+    public static final int A = 0x6;
+    public static final int JSON = 0x7;
+    public static final int XML = 0x8;
+
+    private static boolean IS_SHOW_LOG = false;
+    private static final int STACK_TRACE_INDEX = 5;
+
+    public static void i(Object msg) {
+        printLog(I, null, msg);
     }
 
-    public static void e(String tex){
-        if(BuildConfig.LOG_DEBUG){
-            if(!TextUtils.isEmpty(tex)){
-                Log.e(BuildConfig.LOG_TAG,tex);
-                writeToFile(tex);
+    public static void i(String tag, Object... objects) {
+        printLog(I, tag, objects);
+    }
+
+    public static void e(Object msg) {
+        printLog(E, null, msg);
+    }
+
+    public static void e(String tag, Object... objects) {
+        printLog(E, tag, objects);
+    }
+    public static void a(Object msg) {
+        printLog(A, null, msg);
+    }
+
+    public static void a(String tag, Object... objects) {
+        printLog(A, tag, objects);
+    }
+
+    public static void json(String jsonFormat) {
+        printLog(JSON, null, jsonFormat);
+    }
+
+    public static void json(String tag, String jsonFormat) {
+        printLog(JSON, tag, jsonFormat);
+    }
+
+    public static void xml(String xml) {
+        printLog(XML, null, xml);
+    }
+
+    public static void xml(String tag, String xml) {
+        printLog(XML, tag, xml);
+    }
+
+    public static void file(File targetDirectory, Object msg) {
+        printFile(null, targetDirectory, null, msg);
+    }
+
+    public static void file(String tag, File targetDirectory, Object msg) {
+        printFile(tag, targetDirectory, null, msg);
+    }
+
+    public static void file(String tag, File targetDirectory, String fileName, Object msg) {
+        printFile(tag, targetDirectory, fileName, msg);
+    }
+
+    private static void printLog(int type, String tagStr, Object... objects) {
+        if(!BuildConfig.LOG_DEBUG){
+            return;
+        }
+        if(TextUtils.isEmpty((String.valueOf(objects)))){
+            return;
+        }
+        String[] contents = wrapperContent(tagStr, objects);
+        String tag = contents[0];
+        String msg = contents[1];
+        String headString = contents[2];
+        writeToFile(msg);
+
+        switch (type) {
+            case V:
+            case D:
+            case I:
+            case W:
+            case E:
+            case A:
+                MrBaseLog.printDefault(type, tag, headString + msg);
+                break;
+            case JSON:
+                MrJsonLog.printJson(tag, msg, headString);
+                break;
+            case XML:
+                MrXmlLog.printXml(tag, msg, headString);
+                break;
+            default:
+                break;
+        }
+    }
+    private static void printFile(String tagStr, File targetDirectory, String fileName, Object objectMsg) {
+        if(!BuildConfig.LOG_DEBUG){
+            return;
+        }
+
+        String[] contents = wrapperContent(tagStr, objectMsg);
+        String tag = contents[0];
+        String msg = contents[1];
+        String headString = contents[2];
+        writeToFile(msg);
+
+        MrFileLog.printFile(tag, targetDirectory, fileName, headString, msg);
+    }
+
+    private static String[] wrapperContent(String tagStr, Object... objects) {
+
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+
+        StackTraceElement targetElement = stackTrace[STACK_TRACE_INDEX];
+        String className = targetElement.getClassName();
+        String[] classNameInfo = className.split("\\.");
+        if (classNameInfo.length > 0) {
+            className = classNameInfo[classNameInfo.length - 1] + SUFFIX;
+        }
+        String methodName = targetElement.getMethodName();
+        int lineNumber = targetElement.getLineNumber();
+
+        if (lineNumber < 0) {
+            lineNumber = 0;
+        }
+
+        String methodNameShort = methodName.substring(0, 1).toUpperCase() + methodName.substring(1);
+
+        String tag = (tagStr == null ? className : tagStr);
+        if (TextUtils.isEmpty(tag)) {
+            tag = TAG_DEFAULT;
+        }
+        String msg = (objects == null) ? NULL_TIPS : getObjectsString(objects);
+        String headString = "[ (" + className + ":" + lineNumber + ")#" + methodNameShort + " ] ";
+
+        return new String[]{tag, msg, headString};
+    }
+
+    private static String getObjectsString(Object... objects) {
+
+        if (objects.length > 1) {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("\n");
+            for (int i = 0; i < objects.length; i++) {
+                Object object = objects[i];
+                if (object == null) {
+                    stringBuilder.append(PARAM).append("[").append(i).append("]").append(" = ").append(NULL).append("\n");
+                } else {
+                    stringBuilder.append(PARAM).append("[").append(i).append("]").append(" = ").append(object.toString()).append("\n");
+                }
             }
+            return stringBuilder.toString();
+        } else {
+            Object object = objects[0];
+            return object == null ? NULL : object.toString();
         }
     }
 
